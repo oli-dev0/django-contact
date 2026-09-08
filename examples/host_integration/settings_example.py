@@ -1,0 +1,18 @@
+"""Safe Contact settings to adapt in the host project's settings module."""
+
+INSTALLED_APPS += [  # noqa: F821
+    'post_office',
+    'contact.apps.ContactConfig',
+]
+
+CONTACT_OWNER_EMAIL = 'owner@example.com'
+CONTACT_SENDER_EMAIL = 'web@example.com'
+CONTACT_IP_LIMIT = 5
+CONTACT_IP_WINDOW_SECONDS = 3_600
+CONTACT_EMAIL_LIMIT = 3
+CONTACT_EMAIL_WINDOW_SECONDS = 86_400
+CONTACT_MIN_FORM_FILL_SECONDS = 3
+CONTACT_FORM_TOKEN_MAX_AGE_SECONDS = 3_600
+CONTACT_VERIFICATION_MAX_AGE_SECONDS = 600
+CONTACT_MESSAGE_MAX_LENGTH = 5_000
+CONTACT_TRUSTED_PROXY_CIDRS = ['127.0.0.1/32', '::1/128']

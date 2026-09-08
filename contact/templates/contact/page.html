@@ -1,0 +1,62 @@
+{% load static i18n %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% translate "Contact" %}</title>
+    <meta name="description" content="{% translate 'Send a message using this contact form.' %}">
+    <link rel="stylesheet" href="{% static 'contact/css/contact.css' %}">
+  </head>
+  <body>
+    <main class="contact-page" id="main-content">
+      <p class="prompt">contact <span>~ %</span> <span class="prompt__command">{% translate "compose message" %}</span></p>
+      <h1 id="contact-title">{% translate "Contact" %}</h1>
+      <p class="lede">{% translate "Send a message and I’ll get back to you." %}</p>
+
+      {% if submission_message %}
+        <div class="form-status form-status--{{ submission_state }}" role="status">{{ submission_message }}</div>
+      {% endif %}
+
+      {% if error_summary %}
+        <div class="error-summary" role="alert" tabindex="-1">
+          <p>{% translate "Please check the highlighted fields." %}</p>
+          <ul>
+            {% for error in error_summary %}<li>{% if error.id %}<a href="#{{ error.id }}">{{ error.label }}</a>: {% endif %}{{ error.message }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form method="post" class="form" data-contact-form data-sending-label="{% translate 'Sending…' %}">
+        {% csrf_token %}
+        {{ form.website }}
+        {{ form.form_token }}
+
+        {% for field in public_fields %}
+          <div class="form-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small id="{{ field.id_for_label }}_help" class="form-note">{{ field.help_text }}</small>{% endif %}
+            {% if field.errors %}<p id="{{ field.id_for_label }}_error" class="form-error" role="alert">{{ field.errors|striptags }}</p>{% endif %}
+          </div>
+        {% endfor %}
+
+        {% if show_verification %}
+          <fieldset class="contact-verification">
+            <legend>{{ verification_question }}</legend>
+            <p class="form-note">{% translate "Please complete this quick verification before sending your message." %}</p>
+            <div class="form-row">
+              <label for="{{ verification_answer.id_for_label }}">{{ verification_answer.label }}</label>
+              {{ verification_answer }}
+              {% if verification_answer.errors %}<p id="{{ verification_answer.id_for_label }}_error" class="form-error" role="alert">{{ verification_answer.errors|striptags }}</p>{% endif %}
+            </div>
+            {{ verification_token }}
+          </fieldset>
+        {% endif %}
+
+        <button class="button" type="submit" data-contact-submit>{% translate "Send message" %}</button>
+      </form>
+    </main>
+    <script src="{% static 'contact/js/contact.js' %}" defer></script>
+  </body>
+</html>
